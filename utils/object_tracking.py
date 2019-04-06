@@ -3,7 +3,7 @@ import cv2
 import random
 import copy
 from utils.kalman_filter import KalmanFilter, KalmanFilter_ConstantVelocity, KalmanFilter_ConstantAcceleration
-from utils.optical_flow_tracker import  OpticalFlowTracker
+from utils.optical_flow_tracker import OpticalFlowTracker
 import motmetrics as mm
 
 class TrackedObject:
@@ -130,7 +130,7 @@ class OpticalFlowTrackedObject(TrackedObject):
         self.track[frame_id] = r
 
         center = roi.center()
-        new_center = self.OF.predict(image)
+        new_center = self.OF.predict(image, self.objectId, frame_id, True)
         self.OF.correct(image, roi)
         raux = roi.reposition(new_center)
         r_c = ROI(raux.xTopLeft, raux.yTopLeft, raux.xBottomRight, raux.yBottomRight, self.objectId)
@@ -193,7 +193,7 @@ class ObjectTracker:
                 if self.method == "RegionOverlap":
                     obj = TrackedObject(id)
                 elif self.method == 'OpticalFlow':
-                    obj = OpticalFlowTrackedObject(id,r)
+                    obj = OpticalFlowTrackedObject(id, r)
                 else:
                     obj = KalmanTrackedObject(id, r)
                 obj.add_frame_roi(frame.get_id(), r)
@@ -322,7 +322,7 @@ class ObjectTracker:
     # gets a frame whose rois have no assigned object id and
     # returns a copy of the frame with assigned oject ids if
     # possible (-1 otherwise)
-    def _process_frame_optical_flow(self, untracked_frame: Frame, overlap_th = 0.0, unique_objects = True):
+    def _process_frame_optical_flow(self, untracked_frame: Frame, overlap_th=0.0, unique_objects=True):
         last_frame = self.trackedFrames[untracked_frame.get_id() - 1]
 
         # Create a tracked frame with current frame id

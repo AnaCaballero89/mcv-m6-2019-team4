@@ -3,13 +3,16 @@ import xmltodict
 
 class annotationsParser():
 
-    def __init__(self, filePath):
+    def __init__(self, filePath, fileType='xml', gtFormat='LTWH'):
         self.file = filePath
         self.gt = []
         self.nFrames = 0
         self.extractGT()
+        self.fileType = fileType
+        self.gtFormat = gtFormat
 
-    def extractGT(self):
+    def extractGT(self):  # for xml
+        assert(self.fileType == 'xml')
         self.gt = []
         with open(self.file) as fd:
             doc = xmltodict.parse(fd.read())
@@ -56,6 +59,27 @@ class annotationsParser():
             if int(gtElement[0]) > self.nFrames:
                 self.nFrames = int(gtElement[0])
         return
+
+    def extractGT_txt(self):  # for 'txt' gt annotations (aicity challenge format)
+        assert(self.fileType == 'txt')
+        self.gt = []
+        with open(self.file, 'r') as fd:
+            for line in fd:
+                data = [float(elt.strip()) for elt in line.split(',')]
+                if self.gtFormat == "LTWH":
+                    # format data: [frame, ID, left, top, width, height, 1, -1, -1, -1]
+                    data = [data[0], data[1], data[2], data[3], data[2] + data[4],
+                            data[3] + data[5], data[6]]
+                elif self.gtFormat == "TLBR":
+                    # format data: [frame, ID, left, top, right, bottom, 1, -1, -1, -1]
+                    data = [data[0], data[1], data[2], data[3], data[4],
+                            data[5], data[6]]
+                self.gt.append(data)
+
+            for gtElement in self.gt:
+                if int(gtElement[0]) > self.nFrames:
+                    self.nFrames = int(gtElement[0])
+            return
 
     def setFile(self, filePath):
         self.file = filePath

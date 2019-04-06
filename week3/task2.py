@@ -22,8 +22,8 @@ def load_detections_txt(detections_file, gtFormat, confidence_th=.2):
     return frame_dict
 
 
-def load_annotations(annotations_file):
-    annotations = annotation_parser.annotationsParser(annotations_file)
+def load_annotations(annotations_file, file_type='xml', gt_format='LTWH'):
+    annotations = annotation_parser.annotationsParser(annotations_file, fileType=file_type, gtFormat=gt_format)
 
     # frame objects creation
     frame_dict = {i+1: Frame(i+1) for i in range(0, annotations.getGTNFrames())}
@@ -31,8 +31,8 @@ def load_annotations(annotations_file):
     # filling frames with ROIs
     for i in frame_dict:
         for r in annotations.getAllFrame(i):
-            if r[-1] == 1: # only if car
-                frame_dict[i].add_ROI( ROI(r[2], r[3], r[4], r[5], r[1]) )
+            if r[-1] == 1:  # only if car
+                frame_dict[i].add_ROI(ROI(r[2], r[3], r[4], r[5], r[1]))
 
     return frame_dict
 
@@ -42,7 +42,7 @@ def make_video_from_tracker(trckr, video_name):
     video = cv2.VideoWriter(video_name, four_cc, 10, (1920, 1080))
 
     filepaths = sorted(glob.glob(os.path.join(str(AICITY_DIR), 'frames/image-????.png')))
-    for idx in range(1,len(filepaths)):
+    for idx in range(1, len(filepaths)):
         print(filepaths[idx])
         image = cv2.imread(filepaths[idx])
         image = trckr.draw_frame(idx, image)
@@ -52,6 +52,7 @@ def make_video_from_tracker(trckr, video_name):
         video.write(image)
 
     video.release()
+
 
 def make_video_from_kalman_tracker(trckr, video_name):
     four_cc = cv2.VideoWriter_fourcc(*'XVID')
