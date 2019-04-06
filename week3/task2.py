@@ -37,34 +37,36 @@ def load_annotations(annotations_file, file_type='xml', gt_format='LTWH'):
     return frame_dict
 
 
-def make_video_from_tracker(trckr, video_name):
+def make_video_from_tracker(trckr, video_name, seqcam_path='S03/c010', plot=False):
     four_cc = cv2.VideoWriter_fourcc(*'XVID')
     video = cv2.VideoWriter(video_name, four_cc, 10, (1920, 1080))
 
-    filepaths = sorted(glob.glob(os.path.join(str(AICITY_DIR), 'frames/image-????.png')))
+    filepaths = sorted(glob.glob(os.path.join(str(AICITY_DIR), seqcam_path, 'frames/image-????.png')))
     for idx in range(1, len(filepaths)):
         print(filepaths[idx])
         image = cv2.imread(filepaths[idx])
         image = trckr.draw_frame(idx, image)
-        cv2.imshow("Image", image)
-        cv2.waitKey(1)
+        if plot:
+            cv2.imshow("Image", image)
+            cv2.waitKey(1)
 
         video.write(image)
 
     video.release()
 
 
-def make_video_from_kalman_tracker(trckr, video_name):
+def make_video_from_kalman_tracker(trckr, video_name, seqcam_path='S03/c010', plot=False):
     four_cc = cv2.VideoWriter_fourcc(*'XVID')
     video = cv2.VideoWriter(video_name, four_cc, 10, (1920, 1080))
 
-    filepaths = sorted(glob.glob(os.path.join(str(AICITY_DIR), 'frames/image-????.png')))
-    for idx in range(1,len(filepaths)):
+    filepaths = sorted(glob.glob(os.path.join(str(AICITY_DIR), seqcam_path, 'frames/image-????.png')))
+    for idx in range(1, len(filepaths)):
         print(filepaths[idx])
         image = cv2.imread(filepaths[idx])
         image = trckr.draw_frame_kalman(idx, image)
-        cv2.imshow("Image", image)
-        cv2.waitKey(1)
+        if plot:
+            cv2.imshow("Image", image)
+            cv2.waitKey(1)
 
         video.write(image)
 

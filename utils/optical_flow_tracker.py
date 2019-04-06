@@ -109,6 +109,7 @@ def plot_flow(flow):
     cv2.imshow("Image", rgb)
     cv2.waitKey(1)
 
+
 def run():
     frame_id = 1000;
 
@@ -122,7 +123,7 @@ def run():
     mean_u = np.array(u[mag > th]).mean()
     mean_v = np.array(v[mag > th]).mean()
 
-    return new_center
+    # return new_center
 
 
 if __name__ == '__main__':
