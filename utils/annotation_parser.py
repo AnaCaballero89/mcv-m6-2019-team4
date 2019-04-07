@@ -7,12 +7,14 @@ class annotationsParser():
         self.file = filePath
         self.gt = []
         self.nFrames = 0
-        self.extractGT()
         self.fileType = fileType
         self.gtFormat = gtFormat
+        if self.fileType == 'xml':
+            self.extractGT()
+        else:
+            self.extractGT_txt()
 
     def extractGT(self):  # for xml
-        assert(self.fileType == 'xml')
         self.gt = []
         with open(self.file) as fd:
             doc = xmltodict.parse(fd.read())
@@ -61,7 +63,6 @@ class annotationsParser():
         return
 
     def extractGT_txt(self):  # for 'txt' gt annotations (aicity challenge format)
-        assert(self.fileType == 'txt')
         self.gt = []
         with open(self.file, 'r') as fd:
             for line in fd:

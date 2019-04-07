@@ -375,6 +375,9 @@ class ObjectTracker:
                 print('\tobject {} at position {}'.format(roi.objectId, roi))
 
     def draw_frame(self, frame_number, image):
+        # shield against wrong frame id
+        if frame_number > len(self.trackedFrames):
+            return
         overlay = image.copy()
 
         for roi in self.trackedFrames[frame_number].get_ROIs():
@@ -388,7 +391,7 @@ class ObjectTracker:
                 -1
             )
 
-            #roi_center = (int(roi.xTopLeft + (abs(roi.xTopLeft - roi.xBottomRight) / 2.0)),
+            # roi_center = (int(roi.xTopLeft + (abs(roi.xTopLeft - roi.xBottomRight) / 2.0)),
             #              int(roi.yTopLeft + (abs(roi.yTopLeft - roi.yBottomRight) / 2.0)) )
             text_pos = (int(roi.xTopLeft+10), int(roi.yTopLeft+20))
 
@@ -399,10 +402,11 @@ class ObjectTracker:
 
         return image
 
-
     def draw_frame_kalman(self, frame_number, image):
+        # shield against wrong frame id
+        if frame_number > len(self.trackedFrames):
+            return
         frame = self.trackedFrames[frame_number]
-
         overlay = image.copy()
         for roi in frame.get_ROIs():
             color = self.trackedObjects[roi.objectId].color

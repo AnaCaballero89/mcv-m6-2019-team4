@@ -24,11 +24,11 @@ def optical_flow_tracking(path_to_gt_annotations, path_to_detections, file_type=
 
     tracker.print_objects()
 
-    video_name = "{0}_{1}_{2}.avi".format("Tracking", method, cam_seq_str.replace('/', '_'))
-    if method == 'Kalman':
-        make_video_from_kalman_tracker(tracker, video_name, seqcam_path=cam_seq_str, plot=plot_frames)
-    else:
-        make_video_from_tracker(tracker, video_name, seqcam_path=cam_seq_str, plot=plot_frames)
+    # video_name = "{0}_{1}_{2}.avi".format("Tracking", method, cam_seq_str.replace('/', '_'))
+    # if method == 'Kalman':
+    #     make_video_from_kalman_tracker(tracker, video_name, seqcam_path=cam_seq_str, plot=plot_frames)
+    # else:
+    #     make_video_from_tracker(tracker, video_name, seqcam_path=cam_seq_str, plot=plot_frames)
 
     #Load annotations
     annotated_frames = load_annotations(path_to_gt_annotations, file_type=file_type, gt_format=gt_format)
@@ -40,8 +40,8 @@ def optical_flow_tracking(path_to_gt_annotations, path_to_detections, file_type=
 
     annotation_tracker.print_objects()
     annotation_tracker.print_frames()
-    video_name = "{0}_{1}.avi".format("Annotations", cam_seq_str)
-    make_video_from_tracker(annotation_tracker, video_name, seqcam_path=cam_seq_str, plot=plot_frames)
+    # video_name = "{0}_{1}.avi".format("Annotations", cam_seq_str.replace('/', '_'))
+    # make_video_from_tracker(annotation_tracker, video_name, seqcam_path=cam_seq_str, plot=plot_frames)
 
     acc = tracker.compute_mot_metrics(annotation_tracker)
     print_mot_metrics(acc)

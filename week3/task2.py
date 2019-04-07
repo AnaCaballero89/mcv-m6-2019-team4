@@ -38,12 +38,12 @@ def load_annotations(annotations_file, file_type='xml', gt_format='LTWH'):
 
 
 def make_video_from_tracker(trckr, video_name, seqcam_path='S03/c010', plot=False):
-    four_cc = cv2.VideoWriter_fourcc(*'XVID')
-    video = cv2.VideoWriter(video_name, four_cc, 10, (1920, 1080))
-
     filepaths = sorted(glob.glob(os.path.join(str(AICITY_DIR), seqcam_path, 'frames/image-????.png')))
+    four_cc = cv2.VideoWriter_fourcc(*'XVID')
+    height, width, _ = cv2.imread(filepaths[0]).shape  # not all videos are fullHD, some are higher/lower resolution!
+    video = cv2.VideoWriter(video_name, four_cc, 10, (width, height))
     for idx in range(1, len(filepaths)):
-        print(filepaths[idx])
+        print(filepaths[idx])  # comment this print to boost speed
         image = cv2.imread(filepaths[idx])
         image = trckr.draw_frame(idx, image)
         if plot:
@@ -56,10 +56,10 @@ def make_video_from_tracker(trckr, video_name, seqcam_path='S03/c010', plot=Fals
 
 
 def make_video_from_kalman_tracker(trckr, video_name, seqcam_path='S03/c010', plot=False):
-    four_cc = cv2.VideoWriter_fourcc(*'XVID')
-    video = cv2.VideoWriter(video_name, four_cc, 10, (1920, 1080))
-
     filepaths = sorted(glob.glob(os.path.join(str(AICITY_DIR), seqcam_path, 'frames/image-????.png')))
+    four_cc = cv2.VideoWriter_fourcc(*'XVID')
+    height, width, _ = cv2.imread(filepaths[0]).shape  # not all videos are fullHD, some are higher/lower resolution!
+    video = cv2.VideoWriter(video_name, four_cc, 10, (width, height))
     for idx in range(1, len(filepaths)):
         print(filepaths[idx])
         image = cv2.imread(filepaths[idx])
